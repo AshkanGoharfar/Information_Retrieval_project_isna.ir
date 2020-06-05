@@ -95,20 +95,27 @@ def terms_stemmer():
                 flag = 0
                 for l in range(len(dictionary)):
                     if '#' in lemmatizer.lemmatize(initial_state[i][1][j][k]):
+                        print('# ! : ' + str(lemmatizer.lemmatize(initial_state[i][1][j][k])))
                         if lemmatizer.lemmatize(initial_state[i][1][j][k]).split('#')[1] == dictionary[l][0]:
                             dictionary[l][1] += 1
                             dictionary[l][2].append(initial_state[i][0][0])
                             flag = 1
+                            print('repeated noun term !' + str(dictionary[l][1]) + str(dictionary[l][2]))
                     elif stemmer.stem(initial_state[i][1][j][k]) == dictionary[l][0]:
                         dictionary[l][1] += 1
                         dictionary[l][2].append(initial_state[i][0][0])
+                        print('repeated verb term !' + str(dictionary[l][1]) + str(dictionary[l][2]))
                         flag = 1
 
                 if flag == 0:
                     if '#' in lemmatizer.lemmatize(initial_state[i][1][j][k]):
+                        print('new verb term !' + str(lemmatizer.lemmatize(initial_state[i][1][j][k]).split('#')[1]) + '1' + str(initial_state[i][0][0]))
                         dictionary.append([lemmatizer.lemmatize(initial_state[i][1][j][k]).split('#')[1], 1, [initial_state[i][0][0]]])
                     else:
                         dictionary.append([stemmer.stem(initial_state[i][1][j][k]), 1, [initial_state[i][0][0]]])
+                        print('new noun term !' + str(
+                            lemmatizer.lemmatize(initial_state[i][1][j][k])) + '1' + str(
+                            initial_state[i][0][0]))
     return dictionary
 
 
