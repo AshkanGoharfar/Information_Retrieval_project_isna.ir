@@ -12,6 +12,7 @@ print(stemmer.stem('کارشناس'))
 lemmatizer = Lemmatizer()
 print(lemmatizer.lemmatize('کارشناس'))
 
+
 # tagger = POSTagger(model='resources/postagger.model')
 # print(tagger.tag(word_tokenize('کتاب‌ها')))
 
