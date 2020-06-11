@@ -1,89 +1,80 @@
 from __future__ import unicode_literals
-
 import pandas as pd
 from bs4 import BeautifulSoup as bs
-
 from hazm import *
-from hazm import stopwords_list
-
-import string
-
 import time
+from Generate_stop_words import *
 
-english_alphabet = list(string.ascii_lowercase)
-for item in list(string.ascii_uppercase):
-    english_alphabet.append(item)
-# print(english_alphabet)
+stop_words = collect_stop_words()
+which_csv = {}
 
-stop_words = ['»', '.', '«', '،', '؟', '"', '#', ')', '(', '*', ',', '-', '/', ':', '[', ']', '،', '?', '…', '۰', '۱',
-              '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '-', '+', '=', '@', '$', '$', '%', '^', '&', '-', '_', '{', '}',
-              '\'', '/', ';', '  ', '>', '<', '•', '٪', '؛']
-persian_alphabet = ["ا", "ب", "پ", "ت", "ث", "ج", "چ", "ح", "خ", "د", "ذ", "ر", "ز", "ژ", "س", "ش", "ص", "ض", "ط", "ظ",
-                    "ع", "غ", "ف", "ق",
-                    "ک", "گ", "ل", "م", "ن", "و", "ه", "ی"]
 
-for item in english_alphabet:
-    stop_words.append(item)
+def merge_docs():
+    docs = ['ir-news-0-2.csv', 'ir-news-2-4.csv']
+    all_content = []
+    counter = 0
+    for doc in docs:
+        df = pd.read_csv(doc, delimiter=',')
+        which_csv[doc] = {'start': counter, 'end': counter + len(df['content']) - 1}
+        for i in range(len(df['content'])):
+            all_content.append(df['content'][i])
+        counter = len(df['content'])
+    dict = {'which_csv': which_csv, 'all_docs': all_content}
+    return dict
 
-for item in persian_alphabet:
-    stop_words.append(' ' + item + ' ')
 
-print(stop_words)
+inverted_index = {}
 
 
 def extract_token():
     start_time = time.time()
-    df = pd.read_csv('ir-news-0-2.csv', delimiter=',')
-    dictionary = []
     lemmatizer = Lemmatizer()
-    for i in range(len(df['content'])):
-        soup = bs(df['content'][i])
+    contents = merge_docs()['all_docs']
+    print(merge_docs()['which_csv'])
+    for i in range(len(contents)):
+        soup = bs(contents[i])
         text = soup.get_text()
-        # print(text)
-        dic = {}
         # parsing the text
         lines = text.splitlines()
         parag = []
-        terms = []
         parag.append([i])
-
         for line in lines:
             # check if line has ':', if it doesn't, move to the next line
             if line.find(':') == -1:
                 continue
-
             # Normalize each line
             normalizer = Normalizer()
             line = normalizer.normalize(line)
-            flag = 0
             for j in range(len(stop_words)):
                 if stop_words[j] in line:
                     line = line.replace(stop_words[j], ' ')
                 if '  ' in line:
                     line = line.replace('  ', ' ')
             for element in line.split(' '):
-                l = 0
-                while flag == 0 and l < len(dictionary):
-                    if '#' in lemmatizer.lemmatize(element) and lemmatizer.lemmatize(element).split('#')[1] == \
-                            dictionary[l][0] and i not in dictionary[l][2]:
-                        # print('# ! : ' + str(lemmatizer.lemmatize(element)))
-                        dictionary[l][1] += 1
-                        dictionary[l][2].append(i)
-                        flag = 1
-                    elif element == dictionary[l][0] and i not in dictionary[l][2]:
-                        dictionary[l][1] += 1
-                        dictionary[l][2].append(i)
-                        flag = 1
-                    l += 1
-
+                flag = 0
+                if '#' in lemmatizer.lemmatize(element) and lemmatizer.lemmatize(element).split('#')[
+                    1] in inverted_index and i not in inverted_index[lemmatizer.lemmatize(element).split('#')[1]][
+                    'doc']:
+                    inverted_index[lemmatizer.lemmatize(element).split('#')[1]]['freq'] += 1
+                    inverted_index[lemmatizer.lemmatize(element).split('#')[1]]['doc'].append(i)
+                    flag = 1
+                    # print('iterative verb : ' + str(lemmatizer.lemmatize(element).split('#')[1]) + str(inverted_index[lemmatizer.lemmatize(element).split('#')[1]]))
+                elif element in inverted_index and i not in inverted_index[element]['doc']:
+                    inverted_index[element]['freq'] += 1
+                    inverted_index[element]['doc'].append(i)
+                    flag = 1
+                    # print('iterative noun : ' + str(element) + str(inverted_index[lemmatizer.lemmatize(element).split('#')[1]]))
                 if flag == 0:
-                    if '#' in lemmatizer.lemmatize(element):
-                        dictionary.append([lemmatizer.lemmatize(element).split('#')[1], 1, [i]])
-                    elif element != '':
-                        dictionary.append([element, 1, [i]])
-        # print(dictionary)
+                    if '#' in lemmatizer.lemmatize(element) and lemmatizer.lemmatize(element) not in inverted_index:
+                        inverted_index[lemmatizer.lemmatize(element).split('#')[1]] = {'freq': 1, 'doc': [i]}
+                        # print('new verb : ' + str(lemmatizer.lemmatize(element).split('#')[1]) + str(inverted_index[lemmatizer.lemmatize(element).split('#')[1]]))
+
+                    elif element != '' and element not in inverted_index:
+                        inverted_index[element] = {'freq': 1, 'doc': [i]}
+                        # print('new noun : ' + str(element) + str(inverted_index[element]))
+        # print(inverted_index)
     print("--- %s seconds ---" % (time.time() - start_time))
-    return dictionary
+    return inverted_index
 
 
-print(extract_token())
+print(len(extract_token()))
