@@ -20,26 +20,30 @@ def collect_stop_words():
     with open("chars.txt") as file_in:
         for line in file_in:
             stop_words.append(' ' + str(line) + ' ')
-    with open("nonverbal.txt") as file_in:
-        try:
-            for line in file_in:
-                stop_words.append(' ' + str(line) + ' ')
-        except:
-            pass
 
-    with open("persian.txt") as file_in:
-        try:
-            for line in file_in:
-                stop_words.append(' ' + str(line) + ' ')
-        except:
-            pass
-
-    with open("short.txt") as file_in:
-        try:
-            for line in file_in:
-                stop_words.append(' ' + str(line) + ' ')
-        except:
-            pass
+    with open("stop_words.txt", encoding="utf8") as file_in:
+        for line in file_in:
+            stop_words.append(' ' + str(line) + ' ')
+    # with open("nonverbal.txt") as file_in:
+    #     try:
+    #         for line in file_in:
+    #             stop_words.append(' ' + str(line) + ' ')
+    #     except:
+    #         pass
+    #
+    # with open("persian.txt") as file_in:
+    #     try:
+    #         for line in file_in:
+    #             stop_words.append(' ' + str(line) + ' ')
+    #     except:
+    #         pass
+    #
+    # with open("short.txt") as file_in:
+    #     try:
+    #         for line in file_in:
+    #             stop_words.append(' ' + str(line) + ' ')
+    #     except:
+    #         pass
 
     for item in english_alphabet:
         stop_words.append(item)
@@ -48,3 +52,5 @@ def collect_stop_words():
         stop_words.append(' ' + item + ' ')
 
     return stop_words
+
+print(collect_stop_words())

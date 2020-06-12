@@ -10,7 +10,7 @@ which_csv = {}
 
 
 def merge_docs():
-    docs = ['ir-news-0-2.csv', 'ir-news-2-4.csv']
+    docs = ['ir-news-0-2.csv']
     all_content = []
     counter = 0
     for doc in docs:
@@ -24,12 +24,12 @@ def merge_docs():
 
 
 inverted_index = {}
+contents = merge_docs()['all_docs']
 
 
-def extract_token():
+def extract_inverted_index():
     start_time = time.time()
     lemmatizer = Lemmatizer()
-    contents = merge_docs()['all_docs']
     print(merge_docs()['which_csv'])
     for i in range(len(contents)):
         soup = bs(contents[i])
@@ -50,31 +50,28 @@ def extract_token():
                     line = line.replace(stop_words[j], ' ')
                 if '  ' in line:
                     line = line.replace('  ', ' ')
-            for element in line.split(' '):
+            for term in line.split(' '):
                 flag = 0
-                if '#' in lemmatizer.lemmatize(element) and lemmatizer.lemmatize(element).split('#')[
-                    1] in inverted_index and i not in inverted_index[lemmatizer.lemmatize(element).split('#')[1]][
+                if '#' in lemmatizer.lemmatize(term) and lemmatizer.lemmatize(term).split('#')[
+                    1] in inverted_index and i not in inverted_index[lemmatizer.lemmatize(term).split('#')[1]][
                     'doc']:
-                    inverted_index[lemmatizer.lemmatize(element).split('#')[1]]['freq'] += 1
-                    inverted_index[lemmatizer.lemmatize(element).split('#')[1]]['doc'].append(i)
+                    inverted_index[lemmatizer.lemmatize(term).split('#')[1]]['freq'] += 1
+                    inverted_index[lemmatizer.lemmatize(term).split('#')[1]]['doc'].append(i)
                     flag = 1
-                    # print('iterative verb : ' + str(lemmatizer.lemmatize(element).split('#')[1]) + str(inverted_index[lemmatizer.lemmatize(element).split('#')[1]]))
-                elif element in inverted_index and i not in inverted_index[element]['doc']:
-                    inverted_index[element]['freq'] += 1
-                    inverted_index[element]['doc'].append(i)
+                    # print('iterative verb : ' + str(lemmatizer.lemmatize(term).split('#')[1]) + str(inverted_index[lemmatizer.lemmatize(term).split('#')[1]]))
+                elif term in inverted_index and i not in inverted_index[term]['doc']:
+                    inverted_index[term]['freq'] += 1
+                    inverted_index[term]['doc'].append(i)
                     flag = 1
-                    # print('iterative noun : ' + str(element) + str(inverted_index[lemmatizer.lemmatize(element).split('#')[1]]))
+                    # print('iterative noun : ' + str(term) + str(inverted_index[lemmatizer.lemmatize(term).split('#')[1]]))
                 if flag == 0:
-                    if '#' in lemmatizer.lemmatize(element) and lemmatizer.lemmatize(element) not in inverted_index:
-                        inverted_index[lemmatizer.lemmatize(element).split('#')[1]] = {'freq': 1, 'doc': [i]}
-                        # print('new verb : ' + str(lemmatizer.lemmatize(element).split('#')[1]) + str(inverted_index[lemmatizer.lemmatize(element).split('#')[1]]))
+                    if '#' in lemmatizer.lemmatize(term) and lemmatizer.lemmatize(term) not in inverted_index:
+                        inverted_index[lemmatizer.lemmatize(term).split('#')[1]] = {'freq': 1, 'doc': [i]}
+                        # print('new verb : ' + str(lemmatizer.lemmatize(term).split('#')[1]) + str(inverted_index[lemmatizer.lemmatize(term).split('#')[1]]))
 
-                    elif element != '' and element not in inverted_index:
-                        inverted_index[element] = {'freq': 1, 'doc': [i]}
-                        # print('new noun : ' + str(element) + str(inverted_index[element]))
+                    elif term != '' and term not in inverted_index:
+                        inverted_index[term] = {'freq': 1, 'doc': [i]}
+                        # print('new noun : ' + str(term) + str(inverted_index[term]))
         # print(inverted_index)
     print("--- %s seconds ---" % (time.time() - start_time))
     return inverted_index
-
-
-print(len(extract_token()))
