@@ -12,7 +12,7 @@ for item in inverted_index:
     freq.append(inverted_index[item]['freq'])
 
 
-def Heaps_law(k):
+def heaps_law():
     x = []
     y = []
     token = 0
@@ -20,8 +20,8 @@ def Heaps_law(k):
         x.append(math.log10(i))
         token += freq[i - 1]
         y.append(math.log10(token))
-    area = np.pi * 3
 
+    area = np.pi * 3
     # Plot
     plt.scatter(x, y, s=area, alpha=0.5)
 
@@ -33,12 +33,26 @@ def Heaps_law(k):
     plt.show()
 
 
-# def Zipf_law():
-    # x = []
-    # y = []
-    # token = 0
-    # for i in range(len(freq)):
-    #     x.append(math.log10())
+def zipf_law():
+    x = []
+    y = []
+    token = 0
+    for i in range(len(freq)):
+        x.append(math.log10(freq[i]))
+        y.append(math.log10(freq[0] / freq[i]))
+    area = np.pi * 3
+
+    # Plot
+    plt.scatter(x, y, s=area, alpha=0.5)
+
+    plt.title('Comaparison dataset columns')
+    plt.xlabel('log 10 rank')
+    plt.ylabel('log 10 cfi')
+
+    plt.plot()
+    plt.show()
 
 
-Heaps_law(40)
+zipf_law()
+
+heaps_law()
