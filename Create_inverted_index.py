@@ -26,12 +26,14 @@ def merge_docs():
 inverted_index = {}
 contents = merge_docs()['all_docs']
 
+all_content = []
 
 def extract_inverted_index():
     start_time = time.time()
     lemmatizer = Lemmatizer()
     print(merge_docs()['which_csv'])
     for i in range(len(contents)):
+        each_content = []
         soup = bs(contents[i])
         text = soup.get_text()
         # parsing the text
@@ -57,21 +59,25 @@ def extract_inverted_index():
                     'doc']:
                     inverted_index[lemmatizer.lemmatize(term).split('#')[1]]['freq'] += 1
                     inverted_index[lemmatizer.lemmatize(term).split('#')[1]]['doc'].append(i)
+                    each_content.append(lemmatizer.lemmatize(term).split('#')[1])
                     flag = 1
                     # print('iterative verb : ' + str(lemmatizer.lemmatize(term).split('#')[1]) + str(inverted_index[lemmatizer.lemmatize(term).split('#')[1]]))
                 elif term in inverted_index and i not in inverted_index[term]['doc']:
                     inverted_index[term]['freq'] += 1
                     inverted_index[term]['doc'].append(i)
+                    each_content.append(term)
                     flag = 1
                     # print('iterative noun : ' + str(term) + str(inverted_index[lemmatizer.lemmatize(term).split('#')[1]]))
                 if flag == 0:
                     if '#' in lemmatizer.lemmatize(term) and lemmatizer.lemmatize(term) not in inverted_index:
                         inverted_index[lemmatizer.lemmatize(term).split('#')[1]] = {'freq': 1, 'doc': [i]}
                         # print('new verb : ' + str(lemmatizer.lemmatize(term).split('#')[1]) + str(inverted_index[lemmatizer.lemmatize(term).split('#')[1]]))
-
+                        each_content.append(lemmatizer.lemmatize(term).split('#')[1])
                     elif term != '' and term not in inverted_index:
                         inverted_index[term] = {'freq': 1, 'doc': [i]}
+                        each_content.append(term)
                         # print('new noun : ' + str(term) + str(inverted_index[term]))
+        all_content.append(each_content)
         # print(inverted_index)
     print("--- %s seconds ---" % (time.time() - start_time))
-    return inverted_index
+    return all_content, inverted_index

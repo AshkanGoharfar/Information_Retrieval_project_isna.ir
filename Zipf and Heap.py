@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-inverted_index = extract_inverted_index()
 
+all_of_contents, inverted_index = extract_inverted_index()
 
 freq = []
 
@@ -36,12 +36,11 @@ def heaps_law():
 def zipf_law():
     x = []
     y = []
-    token = 0
     for i in range(len(freq)):
         x.append(math.log10(freq[i]))
         y.append(math.log10(freq[0] / freq[i]))
-    area = np.pi * 3
 
+    area = np.pi * 3
     # Plot
     plt.scatter(x, y, s=area, alpha=0.5)
 
@@ -53,6 +52,6 @@ def zipf_law():
     plt.show()
 
 
-zipf_law()
+# zipf_law()
 
 heaps_law()
