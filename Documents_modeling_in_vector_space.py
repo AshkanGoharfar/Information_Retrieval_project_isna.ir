@@ -106,13 +106,15 @@ print('num of docs : ', num_of_docs())
 
 def calculate_tf_idf(term, doc, doc_coll):
     # tf_idf = 0
-    print('selected document : ', doc)
-    print('term index : ', all_terms.index(term))
-    tf = 1 + math.log10(docs_dict[doc]['words'][all_terms.index(term)])
-    print('term frequency : ', inverted_index[term]['freq'])
-    idf = math.log10(doc_coll / inverted_index[term]['freq'])
-    tf_idf = tf * idf
-    return tf_idf
+    print('Fucking length : ', len(docs_dict[doc]['words']))
+    if term in inverted_index:
+        print('selected document : ', doc)
+        # print('term index : ', all_terms.index(term))
+        tf = 1 + math.log10(docs_dict[doc]['words'][all_terms.index(term)])
+        print('term frequency : ', inverted_index[term]['freq'])
+        idf = math.log10(doc_coll / inverted_index[term]['freq'])
+        tf_idf = tf * idf
+        return tf_idf
 
 
 print(calculate_tf_idf(list(inverted_index.keys())[0], 1, num_of_docs()))
@@ -128,16 +130,26 @@ for item in query_words:
         # print('item after stemming : ', lemmatizer.lemmatize(item).split('#')[1])
 
 
-def score():
+def score(document, query_words):
     score = 0
+    # docs = 0
+    # for documents in docs_dict:
+    #     for query in query_words:
+    #         if docs_dict[documents]['words'][all_terms.index(query)] != 0:
+    #             print('This document contain this term : ', documents)
+    # document = docs
     for term in query_words:
-        for i in range(len(list(docs_dict.keys()))):
-            if docs_dict[list(docs_dict.keys())[i]]['words'][all_terms.index(term)] != 0:
-                score += calculate_tf_idf(all_terms.index(term), list(docs_dict.keys())[i], num_of_docs())
+        # for i in range(len(list(docs_dict.keys()))):
+        if docs_dict[int(document)]['words'][all_terms.index(term)] != 0:
+            score += calculate_tf_idf(term, document, num_of_docs())
     return score
 
 
-print(score())
+##################### result should use instad of 1 input for score function
+
+print(inverted_index[query_words[0]]['doc'])
+
+print(score(14, query_words))
 
 # def calculate_tf_idf():
 #     tf_idf = []
