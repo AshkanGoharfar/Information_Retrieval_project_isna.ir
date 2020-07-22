@@ -50,12 +50,12 @@ term_in_doc = []
 
 
 def calculate_tf_idf(term, doc, doc_coll):
-    print('Fucking length : ', len(docs_dict[doc]['words']))
+    # print('Fucking length : ', len(docs_dict[doc]['words']))
     if term in inverted_index:
-        print('selected document : ', doc)
+        # print('selected document : ', doc)
         # print('term index : ', all_terms.index(term))
         tf = 1 + math.log10(docs_dict[doc]['words'][all_terms.index(term)])
-        print('term frequency : ', inverted_index[term]['freq'])
+        # print('term frequency : ', inverted_index[term]['freq'])
         idf = math.log10(doc_coll / inverted_index[term]['freq'])
         tf_idf = tf * idf
         return tf_idf
@@ -95,8 +95,17 @@ for term in query_words:
             term_in_doc.append(docs)
             print('which doc : ', docs)
 
-print(inverted_index[query_words[0]]['doc'])
-
+# print(inverted_index[query_words[0]]['doc'])
+suggest_doc = {}
 for best_doc in term_in_doc:
-    print('best_doc : ', best_doc)
-    print('score for best doc : ', score(best_doc, query_words))
+    print('First best dock : ', best_doc)
+    score = score(int(best_doc), query_words)
+    if int(score) not in suggest_doc:
+        suggest_doc[int(score)] = best_doc
+        print('best_doc : ', best_doc)
+        print('score for best doc : ', score)
+
+print('suggest_doc : ', suggest_doc)
+sorted_suggest_doc = sorted(suggest_doc.items())
+print('sorted suggest doc : ', sorted_suggest_doc)
+
