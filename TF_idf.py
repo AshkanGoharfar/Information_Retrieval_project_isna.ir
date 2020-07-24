@@ -30,6 +30,7 @@ def term_freq_in_all_doc():
     # for item in docs_dict:
     #     print(item)
     #     print(docs_dict[item]['words'])
+    print("--- %s seconds ---" % (time.time() - start_time))
     return docs_dict
 
 
@@ -79,13 +80,9 @@ def doc_tf_idf(doc):
     return tf_idf
 
 
-res = doc_tf_idf(1)
-print('calculate_tf_idf : ', res)
-print('len calculate_tf_idf : ', len(res))
-
-# query = input("Search your query : ")
-query = "صدا و سیما"
-query_words = query.split(' ')
+# res = doc_tf_idf(1)
+# print('calculate_tf_idf : ', res)
+# print('len calculate_tf_idf : ', len(res))
 
 
 def query_list(query_words):
@@ -111,12 +108,6 @@ def query_list(query_words):
         if term in all_terms and queries[all_terms.index(term)] > 0:
             queries[all_terms.index(term)] += 1
     return queries
-
-
-queries = query_list(query_words)
-
-print('query_list(query_words) : ', query_list(query_words))
-print('len query_list(query_words) : ', len(query_list(query_words)))
 
 
 def query_tf_idf(queries):
@@ -145,8 +136,6 @@ def query_tf_idf(queries):
     print("--- %s seconds ---" % (time.time() - start_time))
     return tf_idf
 
-
-print('great queries : ', query_tf_idf(queries))
 #
 #
 # def score(document, query_words):
