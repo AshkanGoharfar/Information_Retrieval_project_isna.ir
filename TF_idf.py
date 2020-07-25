@@ -136,6 +136,10 @@ def query_tf_idf(queries):
     print("--- %s seconds ---" % (time.time() - start_time))
     return tf_idf
 
+
+terms_tf_idf = []
+
+
 #
 #
 # def score(document, query_words):

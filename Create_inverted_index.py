@@ -7,10 +7,11 @@ from Generate_stop_words import *
 
 stop_words = collect_stop_words()
 which_csv = {}
+docs = ['ir-news-0-2.csv']
 
 
 def merge_docs():
-    docs = ['ir-news-0-2.csv']
+    # docs = ['ir-news-0-2.csv']
     all_content = []
     counter = 0
     for doc in docs:
@@ -27,6 +28,7 @@ inverted_index = {}
 contents = merge_docs()['all_docs']
 
 all_content = []
+
 
 def extract_inverted_index():
     start_time = time.time()
