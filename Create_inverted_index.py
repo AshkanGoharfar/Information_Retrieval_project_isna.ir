@@ -13,14 +13,16 @@ docs = ['ir-news-0-2.csv']
 def merge_docs():
     # docs = ['ir-news-0-2.csv']
     all_content = []
+    all_title = []
     counter = 0
     for doc in docs:
         df = pd.read_csv(doc, delimiter=',')
         which_csv[doc] = {'start': counter, 'end': counter + len(df['content']) - 1}
         for i in range(len(df['content'])):
             all_content.append(df['content'][i])
+            all_title.append(df['title'][i])
         counter = len(df['content'])
-    dict = {'which_csv': which_csv, 'all_docs': all_content}
+    dict = {'which_csv': which_csv, 'all_docs': all_content, 'all_title': all_title}
     return dict
 
 
@@ -64,11 +66,36 @@ def extract_inverted_index():
                     each_content.append(lemmatizer.lemmatize(term).split('#')[1])
                     flag = 1
                     # print('iterative verb : ' + str(lemmatizer.lemmatize(term).split('#')[1]) + str(inverted_index[lemmatizer.lemmatize(term).split('#')[1]]))
+                # elif '#' in lemmatizer.lemmatize(term) and lemmatizer.lemmatize(term).split('#')[
+                #     1] in inverted_index and i in inverted_index[lemmatizer.lemmatize(term).split('#')[1]][
+                #     'doc']:
+                #     each_content.append(lemmatizer.lemmatize(term).split('#')[1])
+                #     # inverted_index[lemmatizer.lemmatize(term).split('#')[1]]['freq'] += 1
+                #     # inverted_index[lemmatizer.lemmatize(term).split('#')[1]]['doc'].append(i)
+                #     # for k in range(len(inverted_index[lemmatizer.lemmatize(term).split('#')[1]]['repetition'])):
+                #     # if inverted_index[lemmatizer.lemmatize(term).split('#')[1]]['repetition'][-1][0] == i:
+                #     #     print('it is ! ')
+                #     # inverted_index[lemmatizer.lemmatize(term).split('#')[1]]['repetition'][-1][1] += 1
+                #     # each_content.append(lemmatizer.lemmatize(term).split('#')[1])
+                #     flag = 1
+                #     # print('iterative verb : ' + str(lemmatizer.lemmatize(term).split('#')[1]) + str(inverted_index[lemmatizer.lemmatize(term).split('#')[1]]))
                 elif term in inverted_index and i not in inverted_index[term]['doc']:
                     inverted_index[term]['freq'] += 1
                     inverted_index[term]['doc'].append(i)
                     each_content.append(term)
                     flag = 1
+                # elif term in inverted_index and i in inverted_index[term]['doc']:
+                #     # inverted_index[term]['freq'] += 1
+                #     # inverted_index[term]['doc'].append(i)
+                #     # inverted_index[term]['repetition'] = [[i, 1]]
+                #
+                #     # for k in range(len(inverted_index[term]['repetition'])):
+                #     # if inverted_index[term]['repetition'][-1][0] == i:
+                #     #     print('oops yes ! ')
+                #     # inverted_index[term]['repetition'][-1][1] += 1
+                #     # each_content.append(term)
+                #     flag = 1
+                    # print('iterative noun : ' + str(term) + str(inverted_index[lemmatizer.lemmatize(term).split('#')[1]]))
                     # print('iterative noun : ' + str(term) + str(inverted_index[lemmatizer.lemmatize(term).split('#')[1]]))
                 if flag == 0:
                     if '#' in lemmatizer.lemmatize(term) and lemmatizer.lemmatize(term) not in inverted_index:

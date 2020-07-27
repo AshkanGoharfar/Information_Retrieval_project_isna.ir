@@ -16,21 +16,17 @@ for term in inverted_index:
 def term_freq_in_all_doc():
     start_time = time.time()
     docs_dict = {}
+    # docs_tf_idf = {}
     for i in range(len(merge_docs()['all_docs'])):
         nan_array = []
         for term in inverted_index:
             nan_array.append(0)
         docs_dict[i] = {'words': nan_array}
+        # docs_tf_idf[i] = {'tf-idf': nan_array}
     for doc in range(len(docs_dict)):
-        for j in range(len(all_of_contents[int(doc)])):
+        for j in range(len(all_of_contents[doc])):
             docs_dict[doc]['words'][all_terms.index(all_of_contents[doc][j])] += 1
-            # if all_of_contents[i][j] in docs_dict:
-
-    # print('docs_dict : ')
-    # for item in docs_dict:
-    #     print(item)
-    #     print(docs_dict[item]['words'])
-    print("--- %s seconds ---" % (time.time() - start_time))
+    print("--- Elapsed time for all doc creation of term freq --- %s seconds ---" % (time.time() - start_time))
     return docs_dict
 
 
@@ -56,22 +52,12 @@ term_in_doc = []
 def doc_tf_idf(doc):
     start_time = time.time()
     tf_idf = []
-    # for i in range(len(all_terms)):
-    #     tf_idf.append(0)
-    # print('all_terms : ', len(all_terms))
-    # print('inverted_index : ', len(inverted_index))
-    # print('tf_idf : ', len(tf_idf))
-    # print('Fucking length : ', len(all_doc_term_freq[doc]['words']))
     for term in inverted_index:
-        # print('selected document : ', doc)
-        # print('term index : ', all_terms.index(term))
-        # print('tf : ', all_doc_term_freq[doc]['words'][all_terms.index(term)])
         if all_doc_term_freq[doc]['words'][all_terms.index(term)] > 0:
             tf = 1 + math.log10(all_doc_term_freq[doc]['words'][all_terms.index(term)])
             # print('term frequency : ', inverted_index[term]['freq'])
             idf = math.log10(docs_num / inverted_index[term]['freq'])
             # print('which tem : ', all_terms.index(term))
-            # print('k : ', k)
             tf_idf.append(tf * idf)
         else:
             tf_idf.append(0)
@@ -113,22 +99,13 @@ def query_list(query_words):
 def query_tf_idf(queries):
     start_time = time.time()
     tf_idf = []
-    # for i in range(len(all_terms)):
-    #     tf_idf.append(0)
-    # print('all_terms : ', len(all_terms))
-    # print('inverted_index : ', len(inverted_index))
-    # print('tf_idf : ', len(tf_idf))
-    # print('Fucking length : ', len(all_doc_term_freq[doc]['words']))
     for term in inverted_index:
-        # print('selected document : ', doc)
-        # print('term index : ', all_terms.index(term))
         # print('tf : ', all_doc_term_freq[doc]['words'][all_terms.index(term)])
         if queries[all_terms.index(term)] > 0:
             tf = 1 + math.log10(queries[all_terms.index(term)])
             # print('term frequency : ', inverted_index[term]['freq'])
             idf = math.log10(docs_num / inverted_index[term]['freq'])
             # print('which tem : ', all_terms.index(term))
-            # print('k : ', k)
             tf_idf.append(tf * idf)
         else:
             tf_idf.append(0)
@@ -138,7 +115,6 @@ def query_tf_idf(queries):
 
 
 terms_tf_idf = []
-
 
 #
 #

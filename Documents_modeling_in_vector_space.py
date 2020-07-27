@@ -22,6 +22,7 @@ for term in inverted_index:
     all_terms.append(term)
     k += 1
 
+
 for doc in range(len(docs_dict)):
     for j in range(len(all_of_contents[int(doc)])):
         docs_dict[doc]['words'][all_terms.index(all_of_contents[doc][j])] += 1
